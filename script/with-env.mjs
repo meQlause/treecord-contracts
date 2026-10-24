@@ -2,7 +2,7 @@
 // while Treecord keeps one .env at the repo root.
 //
 // Usage: node script/with-env.mjs [--env <file>] <command> [args...]
-// Default file: ../../.env (repo root). Variables already set in the shell win.
+// Default file: .env at the repository root. Variables already set in the shell win.
 import { spawnSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";

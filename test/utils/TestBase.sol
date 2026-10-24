@@ -13,7 +13,7 @@ import {VerificationGateway} from "../../src/VerificationGateway.sol";
 import {ITreeRegistry} from "../../src/interfaces/ITreeRegistry.sol";
 import {TreecordConstants as C} from "../../src/libraries/TreecordConstants.sol";
 import {Attestation, AttestationKind, CampaignConfig} from "../../src/libraries/TreecordTypes.sol";
-import {MockUSDC} from "../mocks/MockUSDC.sol";
+import {MockUSDC} from "../../src/mocks/MockUSDC.sol";
 
 /// @notice Deploys and wires every Treecord contract, creates labeled actors, and provides helpers for
 ///         campaigns, claims and signed attestations.

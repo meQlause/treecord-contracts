@@ -13,9 +13,10 @@
     "anvil": "anvil --block-time 1",
     "deploy:local": "node script/with-env.mjs --env .env.anvil forge script script/Deploy.s.sol --rpc-url anvil --broadcast",
     "demo-campaign:local": "node script/with-env.mjs --env .env.anvil forge script script/CreateDemoCampaign.s.sol --rpc-url anvil --broadcast",
-    "deploy:base-sepolia": "node script/with-env.mjs forge script script/Deploy.s.sol --rpc-url base_sepolia --broadcast",
+    "deploy:base-sepolia": "node script/with-env.mjs forge script script/DeployBaseSepolia.s.sol --broadcast --slow && node script/with-env.mjs node script/verify.mjs",
+    "verify:base-sepolia": "node script/with-env.mjs node script/verify.mjs",
     "demo-campaign:base-sepolia": "node script/with-env.mjs forge script script/CreateDemoCampaign.s.sol --rpc-url base_sepolia --broadcast",
-    "simulate:base-sepolia": "node script/with-env.mjs forge script script/Deploy.s.sol --rpc-url base_sepolia",
+    "simulate:base-sepolia": "node script/with-env.mjs forge script script/DeployBaseSepolia.s.sol",
     "export-abis": "tsx script/export-abis.ts"
   },
   "dependencies": {

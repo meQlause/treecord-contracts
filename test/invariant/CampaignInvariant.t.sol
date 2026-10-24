@@ -7,7 +7,7 @@ import {Campaign} from "../../src/Campaign.sol";
 import {TreeRegistry} from "../../src/TreeRegistry.sol";
 import {VerificationGateway} from "../../src/VerificationGateway.sol";
 import {Attestation, AttestationKind, CampaignStatus} from "../../src/libraries/TreecordTypes.sol";
-import {MockUSDC} from "../mocks/MockUSDC.sol";
+import {MockUSDC} from "../../src/mocks/MockUSDC.sol";
 import {TestBase} from "../utils/TestBase.sol";
 
 /// @notice Drives one Active campaign through random plantings, check-ins, forfeits, deaths, replantings,
