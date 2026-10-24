@@ -1,5 +1,5 @@
-// Copies contract ABIs from Foundry's out/ into packages/shared/src/abis as `as const` exports, and
-// deployments/<chainId>.json files into packages/shared/src/addresses.ts.
+// Copies contract ABIs from Foundry's out/ into generated/abis as `as const` exports, and
+// deployments/<chainId>.json files into generated/addresses.ts.
 //
 // Run after `forge build` (and after a deploy to refresh addresses):
 //   pnpm --filter @treecord/contracts export-abis
@@ -9,7 +9,7 @@ import { join, resolve } from "node:path";
 const contractsDir = resolve(import.meta.dirname, "..");
 const outDir = join(contractsDir, "out");
 const deploymentsDir = join(contractsDir, "deployments");
-const sharedSrc = resolve(contractsDir, "../shared/src");
+const sharedSrc = resolve(contractsDir, "generated"); // standalone repo: the monorepo wrote to ../shared/src
 const abisDir = join(sharedSrc, "abis");
 
 const CONTRACTS = [

@@ -8,7 +8,7 @@ import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
 const args = process.argv.slice(2);
-let envFile = resolve(import.meta.dirname, "../../../.env");
+let envFile = resolve(import.meta.dirname, "../.env"); // this repo's own .env (it was the monorepo root's)
 if (args[0] === "--env") {
   envFile = resolve(process.cwd(), args[1]);
   args.splice(0, 2);
