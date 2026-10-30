@@ -67,6 +67,23 @@ contract TreecordKeeperTest is TestBase {
         assertEq(c.forfeitedPool(), 2 * M0);
     }
 
+    // T22: found in the P2 anvil dry run, where a gas estimate starved the forfeit and the report "succeeded"
+    function test_neverSucceedsWithoutSettlingADueTaskAtAnyGasLimit() public {
+        _warpPastClose(c, treeA, 1);
+        bytes memory call = abi.encodeCall(
+            keeper.onReport, (_metadata(WORKFLOW_ID, workflowOwner), abi.encode(_one(_forfeit(address(c), treeA, 1))))
+        );
+        uint256 before = vm.snapshotState();
+
+        vm.startPrank(forwarder);
+        for (uint256 gas = 30_000; gas <= 400_000; gas += 1_000) {
+            (bool ok,) = address(keeper).call{gas: gas}(call);
+            if (ok) assertEq(c.forfeitedPool(), M0, "a report succeeded without settling the due task");
+            vm.revertToState(before);
+        }
+        vm.stopPrank();
+    }
+
     // T3
     function test_expireRemovesDeadTreePastDeadline() public {
         _reportDead(c, treeA, planter1);

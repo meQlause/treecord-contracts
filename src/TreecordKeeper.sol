@@ -34,6 +34,11 @@ contract TreecordKeeper is IReceiver, RoleGated {
     /// @notice Tasks per report: one transaction stays far below CRE's 10M gas write limit (FR-243 bounds).
     uint256 public constant MAX_TASKS = 10;
 
+    /// @notice Gas each task must have before it is tried: over 2.5x the dearest task measured (an expire that
+    ///         forfeits five milestones, about 77k). With less, the report reverts instead of a task running out of
+    ///         gas inside `try` and being skipped as if it were settled (a low gas estimate did that on anvil).
+    uint256 public constant MIN_TASK_GAS = 200_000;
+
     /// @dev Packed metadata: workflow id (32 bytes), workflow name (10 bytes), workflow owner (20 bytes).
     uint256 private constant METADATA_LENGTH = 62;
 
@@ -50,6 +55,7 @@ contract TreecordKeeper is IReceiver, RoleGated {
     error UnauthorizedForwarder(address sender);
     error UnauthorizedWorkflow(bytes32 workflowId, address workflowOwner);
     error TooManyTasks(uint256 count);
+    error InsufficientGas();
 
     constructor(TreecordRoles roles_) RoleGated(roles_) {}
 
@@ -77,6 +83,7 @@ contract TreecordKeeper is IReceiver, RoleGated {
         if (tasks.length > MAX_TASKS) revert TooManyTasks(tasks.length);
 
         for (uint256 i = 0; i < tasks.length; ++i) {
+            if (gasleft() < MIN_TASK_GAS) revert InsufficientGas();
             _settle(tasks[i]);
         }
     }

@@ -1,0 +1,8 @@
+# CRE workflow settings (FR-243, ADR-022). config.staging.json is written at deploy time with the keeper's address.
+staging-settings:
+  user-workflow:
+    workflow-name: "treecord-keeper"
+  workflow-artifacts:
+    workflow-path: "./main.ts"
+    config-path: "./config.staging.json"
+    secrets-path: ""
