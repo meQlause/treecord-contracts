@@ -1,0 +1,5 @@
+# CRE project settings (cre-keeper, ADR-022). RPCs per target; no secrets here.
+staging-settings:
+  rpcs:
+    - chain-name: ethereum-testnet-sepolia-base-1
+      url: https://sepolia.base.org

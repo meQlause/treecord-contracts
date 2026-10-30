@@ -1,0 +1,7 @@
+{
+  "schedule": "0 */5 * * * *",
+  "chainSelectorName": "ethereum-testnet-sepolia-base-1",
+  "keeperAddress": "0xaf85d74F9a938BbBB431e1aADC6229Ea5a86Eba9",
+  "maxScan": "500",
+  "gasLimit": "3000000"
+}
