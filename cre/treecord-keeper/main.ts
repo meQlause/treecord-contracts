@@ -8,6 +8,7 @@ import {
   getNetwork,
   handler,
   LAST_FINALIZED_BLOCK_NUMBER,
+  LATEST_BLOCK_NUMBER,
   prepareReportRequest,
   Runner,
   type Runtime,
@@ -24,6 +25,9 @@ const configSchema = z.object({
   // trees findDue scans per run, from tree 1 (TreecordKeeper.findDue)
   maxScan: z.string().regex(/^[1-9][0-9]*$/),
   gasLimit: z.string().regex(/^[1-9][0-9]*$/),
+  // "finalized" on Chainlink's network, so every node reads the same block and the DON agrees on one report;
+  // "latest" for `cre workflow simulate` (one node), whose finalized view trails Base Sepolia's by far more
+  readBlock: z.enum(['finalized', 'latest']),
 });
 
 type Config = z.infer<typeof configSchema>;
@@ -35,7 +39,7 @@ const KEEPER_ABI = parseAbi([
 ]);
 
 const onCronTrigger = (runtime: Runtime<Config>): string => {
-  const { chainSelectorName, keeperAddress, maxScan, gasLimit } = runtime.config;
+  const { chainSelectorName, keeperAddress, maxScan, gasLimit, readBlock } = runtime.config;
   const network = getNetwork({ chainFamily: 'evm', chainSelectorName, isTestnet: true });
 
   if (!network) {
@@ -44,7 +48,6 @@ const onCronTrigger = (runtime: Runtime<Config>): string => {
 
   const evmClient = new EVMClient(network.chainSelector.selector);
   const keeper = keeperAddress as Address;
-  // finalized, so every node reads the same block and the DON agrees on one report
   const read = evmClient
     .callContract(runtime, {
       call: encodeCallMsg({
@@ -56,7 +59,7 @@ const onCronTrigger = (runtime: Runtime<Config>): string => {
           args: [1n, BigInt(maxScan)],
         }),
       }),
-      blockNumber: LAST_FINALIZED_BLOCK_NUMBER,
+      blockNumber: readBlock === 'finalized' ? LAST_FINALIZED_BLOCK_NUMBER : LATEST_BLOCK_NUMBER,
     })
     .result();
   const due = decodeFunctionResult({
