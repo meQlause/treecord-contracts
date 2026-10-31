@@ -1,0 +1,26 @@
+name: cre-keeper
+
+# The Chainlink keeper branch only: the contract suites and the CRE workflow's tests. Builds and tests; never deploys.
+on:
+  push:
+    branches: [feat/cre-keeper]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - uses: foundry-rs/foundry-toolchain@v1
+      - run: forge test
+      - uses: oven-sh/setup-bun@v2
+      - working-directory: cre/treecord-keeper
+        run: bun install --frozen-lockfile && bun test && bun x tsc --noEmit

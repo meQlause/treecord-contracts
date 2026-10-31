@@ -68,3 +68,17 @@ cd cre && cre workflow simulate treecord-keeper --target staging-settings --non-
 > The keeper only gets a task the scheduler has not settled first. A worker running `main` against the same
 > contracts forfeits within seconds, so the demo runs on its own deployment with the local worker indexer-only
 > (`WORKER_MODE=indexer`). The first Chainlink forfeit: tx `0x95878769330de4799f8cb8dbb2fefc8d4440c7e013694f6509f4cdbed942df00`.
+
+### What's left
+
+This branch is a hackathon demo, kept apart from `master`. Its CI (`.github/workflows/cre-keeper.yml` in this repo,
+treecord-backend and treecord-frontend) only builds and tests; `master`'s `ci-cd` still deploys `master` alone.
+
+| # | Left | Why it waits |
+|---|---|---|
+| 1 | Run the workflow on Chainlink's network: `cre workflow deploy`, then `configure()` with the `KeystoneForwarder`, the deployed workflow id and owner, and `readBlock: "finalized"` | The CRE account has no deploy access yet (`cre account access` asks for it); today the workflow runs only under `cre workflow simulate --broadcast` |
+| 2 | Decide the contract set before merging to `master` | treecord-backend's frozen `addresses.ts` for 84532 points at this demo deployment; merging as-is redeploys the Cloud Run API and worker onto it |
+| 3 | Stop the scheduler racing the keeper | `master`'s worker forfeits a closed window within seconds, so the keeper only settles what the scheduler has not; the demo runs the worker indexer-only |
+| 4 | Fix the tree page for a campaign with no metadata | treecord-frontend `src/features/trees/tree.rules.ts:29` calls `isLongRegion(null)` and the page crashes; the demo campaign has its title and region seeded |
+| 5 | Rebase on `master` | `master` moved on (two commits each in treecord-contracts and treecord-frontend) after this branch was cut |
+| 6 | A hosted demo | The demo runs locally against Base Sepolia (`pnpm exec vite --mode sepolia`, the API and an indexer-only worker on `.env.sepolia`); deployment was out of scope |
